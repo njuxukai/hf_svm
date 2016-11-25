@@ -37,9 +37,38 @@
     <Compile Include="util\__init__.py" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="cache\" />
+    <Folder Include="logs\" />
     <Folder Include="md_provider" />
     <Folder Include="model" />
     <Folder Include="util" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="cache\20151201_600030.SH.pk" />
+    <Content Include="cache\20151202_600030.SH.pk" />
+    <Content Include="cache\20151203_600030.SH.pk" />
+    <Content Include="cache\20151204_600030.SH.pk" />
+    <Content Include="cache\20151207_600030.SH.pk" />
+    <Content Include="cache\20151208_600030.SH.pk" />
+    <Content Include="cache\20151209_600030.SH.pk" />
+    <Content Include="cache\20151210_600030.SH.pk" />
+    <Content Include="cache\20151211_600030.SH.pk" />
+    <Content Include="cache\20151214_600030.SH.pk" />
+    <Content Include="cache\20151215_600030.SH.pk" />
+    <Content Include="cache\20151216_600030.SH.pk" />
+    <Content Include="cache\20151217_600030.SH.pk" />
+    <Content Include="cache\20151218_600030.SH.pk" />
+    <Content Include="cache\20151221_600030.SH.pk" />
+    <Content Include="cache\20151222_600030.SH.pk" />
+    <Content Include="cache\20151223_600030.SH.pk" />
+    <Content Include="cache\20151224_600030.SH.pk" />
+    <Content Include="cache\20151225_600030.SH.pk" />
+    <Content Include="cache\20151228_600030.SH.pk" />
+    <Content Include="cache\20151229_600030.SH.pk" />
+    <Content Include="cache\20151230_600030.SH.pk" />
+    <Content Include="cache\20151231_600030.SH.pk" />
+    <Content Include="logs\app.log" />
+    <Content Include="logs\app_r.log" />
   </ItemGroup>
   <Import Project="$(PtvsTargetsFile)" Condition="Exists($(PtvsTargetsFile))" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" Condition="!Exists($(PtvsTargetsFile))" />
