@@ -27,7 +27,7 @@
     <Compile Include="md_provider\md_provider.py" />
     <Compile Include="md_provider\__init__.py" />
     <Compile Include="model\extract.py" />
-    <Compile Include="model\mock_trade.py" />
+    <Compile Include="model\mock_trade.txt" />
     <Compile Include="model\parameter.py" />
     <Compile Include="model\trade.py" />
     <Compile Include="model\training.py" />

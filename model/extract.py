@@ -262,6 +262,15 @@ class FeatureExtractor(object):
         self.feature_df['v8_bid_lambda'][self.feature_df['v8_bid_lambda'] > 0] = 1
         self.feature_df['v8_bid_lambda'][self.feature_df['v8_bid_lambda'] <= 0] = 0
 
+    def cal_other_features(self):
+        """
+        新增特征：
+        1 当前涨跌幅
+        2 当前跟踪指数涨跌幅
+        """        
+        pass
+
+
     def mark_label(self):
         '''
             在特征dataframe上对特征向量打标签，完成该步骤后，删除所有含有nan的行
@@ -301,11 +310,14 @@ class FeatureExtractor(object):
         predict_interval = int(self.parameter.predict_duration / 3)
         last_price_series = self.feature_df['last_price'].shift(-predict_interval) - \
             self.feature_df['last_price']
-        threshold = 0.002 * self.feature_df['open_price'][0]
+        threshold = self.parameter.predict_trend_rate * self.feature_df['open_price'][0]
         last_price_series.dropna()
         self.feature_df['label'] = 1 * (last_price_series >= threshold) + \
             (-1) * (last_price_series <= -threshold)
-
+        #for i in range(len(self.feature_df) - predict_interval):
+        #    min_price = np.max(self.feature_df['last_price'][i:i+predict_interval]) 
+        #    max_price = np.max(self.feature_df['last_price'][i:i+predict_interval])
+           
                                   
 
     def cut_unecessary_data(self):
