@@ -3,6 +3,7 @@
 import os
 import csv
 from md_provider.md_provider import *
+from md_provider.md_data_type import *
 from util.global_data import *
 
 
@@ -24,6 +25,23 @@ def load_csv(fname):
     return result
             
 def convert_dict_to_market_data(row_dict):
+    md = MarketDataEntry()
+    factor = 10000
+    if "TradingDay" in row_dict and "Time" in row_dict:
+        md.timestamp = datetime.strptime(row_dict["ActionDay"] + row_dict["Time"].ljust(9, '0'), '%Y%m%d%H%M%S%f')
+    if "WindCode" in row_dict:
+        md.sec_code = row_dict['WindCode']
+    if "High" in row_dict:
+        md.max_price = float(row_dict["High"]) / factor
+    if "Low" in row_dict:
+        md.min_price = float(row_dict["Low"]) / factor
+    if "Match" in row_dict:
+        md.last_price = float(row_dict["Match"]) / factor
+    if "Open" in row_dict:
+        md.open_price = float(row_dict["Open"]) / factor
+    if "PreClose" in row_dict:
+        md.pre_close_price = flost(row_dict["PreClose"]) / factor
+    if ""
     pass
 
 def convert_dict_to_order_queue(row_dict):
