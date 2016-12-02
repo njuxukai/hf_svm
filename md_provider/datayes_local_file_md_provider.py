@@ -13,7 +13,7 @@ class DatayesLocalFileMDProvider(MDProvider):
     """
     201512-201603 数据，上海数据比较完整，深圳大量字段为空，不可使用
     """
-    file_dir = "Y:\\"
+    file_dir = "X:\\"
 
     @classmethod
     def get_data(cls, trade_date, sec_codes):

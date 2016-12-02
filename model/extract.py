@@ -28,7 +28,7 @@ class FeatureExtractor(object):
             'bid_price5', 'bid_volume5', 'bid_price6', 'bid_volume6', \
             'bid_price7', 'bid_volume7', 'bid_price8', 'bid_volume8', \
             'bid_price9', 'bid_volume9', 'bid_price10', 'bid_volume10', \
-            'acc_deal_volume', 'acc_deal_amount']
+            'acc_deal_volume', 'acc_deal_amount', 'pre_close_price']
         in_count = 0
         out_count = 0
 
@@ -49,7 +49,7 @@ class FeatureExtractor(object):
                 v.bid_prices[4], v.bid_volumes[4], v.bid_prices[5], v.bid_volumes[5], \
                 v.bid_prices[6], v.bid_volumes[6], v.bid_prices[7], v.bid_volumes[7], \
                 v.bid_prices[8], v.bid_volumes[8], v.bid_prices[9], v.bid_volumes[9], \
-                v.acc_deal_volume, v.acc_deal_amount]
+                v.acc_deal_volume, v.acc_deal_amount, v.pre_close_price]
             m.append(row)
             index.append(k)        
         m = pd.DataFrame(m, columns=columns, index=index)
@@ -262,12 +262,17 @@ class FeatureExtractor(object):
         self.feature_df['v8_bid_lambda'][self.feature_df['v8_bid_lambda'] > 0] = 1
         self.feature_df['v8_bid_lambda'][self.feature_df['v8_bid_lambda'] <= 0] = 0
 
-    def cal_other_features(self):
+    def cal_extension_features(self):
         """
         新增特征：
         1 当前涨跌幅
         2 当前跟踪指数涨跌幅
-        """        
+        """ 
+        self.feature_df["pct_chg"] = 100 * (self.feature_df["last_price"] / self.feature_df["pre_close_price"] - 1)
+        self.feature_df["almost_high_limit"] = 1 * (self.feature_df["pct_chg"] >= 7)
+        self.feature_df["almost_low_limit"] = 1 * (self.feature_df["pct_chg"] <= -7)
+        
+        
         pass
 
 

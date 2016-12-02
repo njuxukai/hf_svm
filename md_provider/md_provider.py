@@ -9,6 +9,6 @@ class MDProvider(metaclass=ABCMeta):
     def  get_data(cls, trade_date, sec_codes):
         """
         {sec_code : data}
-        data = {MarketData, OrderQueue, Transaction}
+        data = {MarketData, OrderQueue, Transaction, Order(sz), IndexData(optional)}
         """
         pass

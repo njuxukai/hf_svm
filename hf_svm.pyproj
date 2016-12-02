@@ -25,6 +25,9 @@
     <Compile Include="md_provider\datayes_local_file_md_provider.py" />
     <Compile Include="md_provider\md_data_type.py" />
     <Compile Include="md_provider\md_provider.py" />
+    <Compile Include="md_provider\wind_tdf_csv_md_provider.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="md_provider\__init__.py" />
     <Compile Include="model\extract.py" />
     <Compile Include="model\mock_trade.txt" />

@@ -39,3 +39,28 @@ class TransactionEntry(object):
     volume = attr.ib(default=0.0)
     order_id = attr.ib(default=0)
     direction = attr.ib(default='N') 
+
+@attr.s
+class OrderEntry(object):
+    sec_code = attr.ib(default='')
+    timestamp = attr.ib(default=datetime.now())
+    function_code = attr.ib(default='B')
+    order_kind = attr.ib(default='0')
+    order_sno = attr.ib(default=0)
+    order_price = attr.ib(default=0)
+    order_volume = attr.ib(default=0)
+    
+    
+
+@attr.s
+class IndexDataEntry(object):
+    index_code = attr.ib(default='')
+    timestamp = attr.ib(default=datetime.now())
+    last_index = attr.ib(default=0)
+    high_index = attr.ib(default=0)
+    low_index = attr.ib(default=0)
+    open_index = attr.ib(default=0)
+    preclose_index = attr.ib(default=0)
+    total_volume = attr.ib(default=0)
+    turnover = attr.ib(default=0)
+    
