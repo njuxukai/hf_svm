@@ -40,12 +40,60 @@ def convert_dict_to_market_data(row_dict):
     if "Open" in row_dict:
         md.open_price = float(row_dict["Open"]) / factor
     if "PreClose" in row_dict:
-        md.pre_close_price = flost(row_dict["PreClose"]) / factor
-    if ""
-    pass
+        md.pre_close_price = float(row_dict["PreClose"]) / factor
+    if "Turnover" in row_dict:
+        md.acc_deal_amount = float(row_dict["Turnover"]) 
+    if "Volume" in row_dict:
+        md.acc_deal_volume = float(row_dict["Volume"])
+    if "TotalAskVol" in row_dict:
+        md.total_ask_vol = int(row_dict["TotalAskVol"])
+    if "TotalBidVol" in row_dict:
+        md.total_bid_vol = int(row_dict["TotalBidVol"])
+    if "NumTrades" in row_dict:
+        md.num_trades = int(row_dict["NumTrades"])
+    if "WeightedAvgAskPrice" in row_dict:
+        md.weighted_avg_ask_price = float(row_dict["WeightedAvgAskPrice"]) / factor
+    if "WeightedAvgBidPrice" in row_dict:
+        md.weighted_avg_bid_price = float(row_dict["WeightedAvgBidPrice"]) / factor
+    for i in range(1,11):
+        ask_price_label = "AskPrice{0}".format(i)
+        bid_price_label = "BidPrice{0}".format(i)
+        ask_volume_label = "AskVolume{0}".format(i)
+        bid_volume_label = "BidVolume{0}".format(i)
+        if ask_price_label in row_dict:
+            md.ask_prices.append(float(row_dict[ask_price_label]) / factor)
+        else:
+            md.ask_prices.append(0.0)
+        if bid_price_label in row_dict:
+            md.bid_prices.append(float(row_dict[bid_price_label]) / factor)
+        else:
+            md.bid_prices.append(0.0)
+        if ask_volume_label in row_dict:
+            md.ask_volumes.append(float(row_dict[ask_volume_label]) / factor)
+        else:
+            md.ask_volumes.append(0.0)
+        if bid_volume_label in row_dict:
+            md.bid_volumes.append(float(row_dict[bid_volume_label]) / factor)
+        else:
+            md.bid_volumes.append(0.0)
+    return md
 
 def convert_dict_to_order_queue(row_dict):
-    pass
+    factor = 10000
+    order_queue = OrderQueueEntry()
+    if "ActionDay" in row_dict and "Time" in row_dict:
+        order_queue.timestamp = datetime.strptime(row_dict["ActionDay"] + row_dict["Time"].ljust(9, '0'), '%Y%m%d%H%M%S%f')
+    if "WindCode" in row_dict:
+        order_queue.sec_code = row_dict['WindCode']
+    if "Side" in row_dict:
+        order_queue.direction = row_dict["Side"]
+    if "price" in row_dict:
+        order_queue.price = float(row_dict["Price"]) / factor
+    if "ABItems" in row_dict:
+        order_queue.total_count = int(row_dict["ABItems"])
+    if "ABVolumes" in row_dict:
+        order_queue.order_sizes = [int(i) for i in row_dict["ABVolumes"].split(":")]
+    return order_queue
 
 def convert_dict_to_transaction(row_dict):
     pass

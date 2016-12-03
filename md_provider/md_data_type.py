@@ -42,10 +42,16 @@ class OrderQueueEntry(object):
 class TransactionEntry(object):
     sec_code = attr.ib(default='')
     timestamp = attr.ib(default=datetime.now())
+    ask_order_sno = attr.ib(default=0)
+    bid_order_sno = attr.ib(default=0)
+    direction = attr.ib(default='B')
+    function_code = attr.ib(default='0')
+    index = attr.ib(default=0)
+    order_kind = attr.ib(default='0')    
     price = attr.ib(default=0.0)
     volume = attr.ib(default=0.0)
-    order_id = attr.ib(default=0)
-    direction = attr.ib(default='N') 
+
+
 
 @attr.s
 class OrderEntry(object):

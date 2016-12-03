@@ -167,7 +167,7 @@ class DatayesLocalFileMDProvider(MDProvider):
                 tran.timestamp = datetime.strptime(row[2] + row[3].ljust(9,'0'), '%Y%m%d%H%M%S%f')
                 tran.price = float(row[4]) if len(row[4]) > 0 else 0.0
                 tran.volume = float(row[5]) if len(row[5]) > 0 else 0.0 
-                tran.order_id = float(row[7]) if len(row[7]) > 0 else 0.0 
+                tran.index = int(row[7]) if len(row[7]) > 0 else 0.0 
                 tran.direction = row[8]
                 result[tran.timestamp] = tran
             except:
