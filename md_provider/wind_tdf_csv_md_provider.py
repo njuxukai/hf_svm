@@ -5,6 +5,8 @@ import csv
 from md_provider.md_provider import *
 from md_provider.md_data_type import *
 from util.global_data import *
+from util.af_util import get_index_code
+from collections import OrderedDict
 
 
 def load_csv(fname):
@@ -23,6 +25,7 @@ def load_csv(fname):
             row[lines[0][j]] = lines[i][j]
         result.append(row)
     return result
+
             
 def convert_dict_to_market_data(row_dict):
     md = MarketDataEntry()
@@ -78,6 +81,7 @@ def convert_dict_to_market_data(row_dict):
             md.bid_volumes.append(0.0)
     return md
 
+
 def convert_dict_to_order_queue(row_dict):
     factor = 10000
     order_queue = OrderQueueEntry()
@@ -95,19 +99,80 @@ def convert_dict_to_order_queue(row_dict):
         order_queue.order_sizes = [int(i) for i in row_dict["ABVolumes"].split(":")]
     return order_queue
 
+
 def convert_dict_to_transaction(row_dict):
-    pass
+    factor = 10000
+    transaction = TransactionEntry()
+    if "ActionDay" in row_dict and "Time" in row_dict:
+        transaction.timestamp = datetime.strptime(row_dict["ActionDay"] + row_dict["Time"].ljust(9, '0'), '%Y%m%d%H%M%S%f')
+    if "WindCode" in row_dict:
+        transaction.sec_code = row_dict['WindCode']
+    if "BSFlag" in row_dict:
+        transaction.direction = row_dict["BSFlag"]
+    if "Price" in row_dict:
+        transaction.price = float(row_dict["Price"]) / factor
+    if "Volume" in row_dict:
+        transaction.volume = int(row_dict["Volume"])
+    if "AskOrder" in row_dict:
+        transaction.ask_order_sno = int(row_dict["AskOrder"])
+    if "BidOrder" in row_dict:
+        transaction.bid_order_sno = int(row_dict["BidOrder"])
+    if "FunctionCode" in row_dict:
+        transaction.function_code = str(row_dict["FunctionCode"])
+    if "Index" in row_dict:
+        transaction.index = int(row_dict["Index"])
+    if "OrderKind" in row_dict:
+        transaction.order_kind = str(row_dict["OrderKind"]) 
+    return transaction
+
 
 def convert_dict_to_order(row_dict):
-    pass
+    factor = 10000
+    order = OrderEntry()
+    if "ActionDay" in row_dict and "Time" in row_dict:
+        order.timestamp = datetime.strptime(row_dict["ActionDay"] + row_dict["Time"].ljust(9, '0'), '%Y%m%d%H%M%S%f')
+    if "WindCode" in row_dict:
+        order.sec_code = row_dict['WindCode']
+    if "FunctionCode" in row_dict:
+        order.function_code = str(row_dict["FunctionCode"])
+    if "Order" in row_dict:
+        order.order_sno = int(row_dict["Order"])
+    if "OrderKind" in row_dict:
+        order.order_kind = str(row_dict["OrderKind"])
+    if "Price" in row_dict:
+        order.order_price = float(row_dict["Price"]) / factor
+    if "Volume" in row_dict:
+        order.order_volume = int(row_dict["Volume"])
+    return order
+
 
 def convert_dict_to_index_data(row_dict):
-    pass
- 
+    index_data = IndexDataEntry()
+    factor = 10000
+    if "ActionDay" in row_dict and "Time" in row_dict:
+        index_data.timestamp = datetime.strptime(row_dict["ActionDay"] + row_dict["Time"].ljust(9, '0'), '%Y%m%d%H%M%S%f')
+    if "WindCode" in row_dict:
+        index_data.sec_code = row_dict['WindCode']
+    if "HighIndex" in row_dict:
+        index_data.high_index = float(row_dict["HighIndex"]) / factor
+    if "LastIndex" in row_dict:
+        index_data.last_index = float(row_dict["LastIndex"]) / factor
+    if "LowIndex" in row_dict:
+        index_data.low_index = float(row_dict["LowIndex"]) / factor
+    if "OpenIndex" in row_dict:
+        index_data.open_index = float(row_dict["OpenIndex"]) / factor
+    if "PreCloseIndex" in row_dict:
+        index_data.preclose_index = float(row_dict["PreCloseIndex"]) / factor 
+    if "TotalVolume" in row_dict:
+        index_data.acc_trade_volume = int(row_dict["TotalVolume"]) 
+    if "Turnover" in row_dict:
+        index_data.acc_trade_amount = int(row_dict["Turnover"])
+    return index_data
+
 
 class WindTDFCsvMDProvider(MDProvider):
     """
-    20161201 ??ʼ????
+    20161201 TDF行情接口盘后
     """
     file_dir = r"Z:\wind_tdf_level2"
     @classmethod
@@ -124,37 +189,49 @@ class WindTDFCsvMDProvider(MDProvider):
         if not os.path.exists(target_path):
             return None
 
+        market_data_dict = OrderedDict()
         market_data_fname = target_path + 'MarketData.csv'
         rows = load_csv(market_data_fname)
-        mds = [convert_dict_to_market_data(row) for row in rows]
-        if len(mds) > 0:
-            result[MARKET_DATA_LABEL] = mds
+        for row in rows:
+            md = convert_dict_to_market_data(row)
+            market_data_dict[md.timestamp] = md
+        result[MARKET_DATA_LABEL] = market_data_dict
 
+        order_queue_dict = OrderedDict()
         order_queue_fname = target_path + 'OrderQueue.csv'
         rows = load_csv(order_queue_fname)
-        order_queues = [convert_dict_to_order_queue(row) for row in rows]
-        if len(order_queues) > 0:
-            result[OREDER_QUEUE_LABEL] = order_queues
+        for row in rows:
+            queue = convert_dict_to_order_queue(row)
+            if queue.timestamp not in order_queue_dict:
+                order_queue_dict[queue.timestamp] = {}
+            order_queue_dict[queue.timestamp][queue.direction] = queue
+            result[OREDER_QUEUE_LABEL] = order_queue_dict
             
+        transaction_dict = OrderedDict()
         transaction_fname = target_path + 'Transaction.csv'
         rows = load_csv(transaction_fname)
-        transactions = [convert_dict_to_transaction(row) for row in rows]
-        if len(transactions) > 0:
-            result[TRANSACTION_LABEL] = transactions
+        for row in rows:
+            transaction = convert_dict_to_transaction(row)
+            transaction_dict[transaction.timestamp] = transaction
+        result[TRANSACTION_LABEL] = transaction_dict
         
+        order_dict = OrderedDict()
         order_fname = target_path + 'Order.csv'
         rows = load_csv(order_fname)
-        orders = [convert_dict_to_order(row) for row in rows]
-        if len(orders) > 0:
-            result[ORDER_LABEL] = orders
+        for row in rows:
+            order = convert_dict_to_order(row)
+            order_dict[order.timestamp] = order
+        result[ORDER_LABEL] = order_dict
 
+        index_data_dict = OrderedDict()
         index_code = get_index_code(sec_code)
         target_index_path =  r"{0}/{1}/index/{2}/".format(file_dir, trade_date,index_code)
         index_data_fname = target_index_path + 'IndexData.csv'
         rows =load_csv(index_data_fname)
-        index_datas = [convert_dict_to_index_data(row) for row in rows]
-        if len(index_datas) > 0:
-            result[INDEX_DATA_LABEL] = index_datas
+        for row in rows:
+            index_data = convert_dict_to_index_data(row)
+            index_data_dict[index_data.timestamp] = index_data
+        result[INDEX_DATA_LABEL] = index_data_dict
 
         return result
 

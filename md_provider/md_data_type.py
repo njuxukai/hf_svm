@@ -63,7 +63,6 @@ class OrderEntry(object):
     order_price = attr.ib(default=0)
     order_volume = attr.ib(default=0)
     
-    
 
 @attr.s
 class IndexDataEntry(object):
@@ -74,6 +73,6 @@ class IndexDataEntry(object):
     low_index = attr.ib(default=0)
     open_index = attr.ib(default=0)
     preclose_index = attr.ib(default=0)
-    total_volume = attr.ib(default=0)
-    turnover = attr.ib(default=0)
+    acc_trade_volume = attr.ib(default=0)
+    acc_trade_amount = attr.ib(default=0)
     

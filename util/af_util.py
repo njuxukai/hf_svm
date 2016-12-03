@@ -7,6 +7,12 @@ from util.global_data import *
 import sqlite3
 local_db_string = 'local.db'
 
+def get_index_code(sec_code):
+    """
+    TODO
+    """
+    pass
+
 def qry_local_db(sql):
     conn = sqlite3.connect(local_db_string)
     curs = conn.cursor()
