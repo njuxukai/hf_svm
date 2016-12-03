@@ -7,11 +7,8 @@ from util.global_data import *
 import sqlite3
 local_db_string = 'local.db'
 
-def get_index_code(sec_code):
-    """
-    TODO
-    """
-    pass
+
+
 
 def qry_local_db(sql):
     conn = sqlite3.connect(local_db_string)
@@ -31,6 +28,17 @@ def get_trade_date_list(begin_date, end_date):
     for row in data:
         result.append(row[0])
     return result
+
+
+def get_index_code(sec_code):
+    qry_sql = ("select index_code from t_stock_index "
+               "where stock_code = {0}")
+    data = qry_local_db(qry_sql.format(sec_code))
+    if len(data) > 0:
+        return data[0][0]
+    else:
+        return None
+
 
 def get_sec_md_dataset(trade_date, sec_code):
     """
